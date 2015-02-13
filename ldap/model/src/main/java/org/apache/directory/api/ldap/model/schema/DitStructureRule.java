@@ -208,14 +208,15 @@ public class DitStructureRule extends AbstractSchemaObject
 
 
     /**
-     * The DIT structure rule does not have an OID, so this implementations always throws an exception.
+     * The DIT structure rule does not have an OID.
      * 
      * {@inheritDoc}
      */
     @Override
     public String getOid()
     {
-        throw new NotImplementedException();
+        // We cannot throw exception here. E.g. SchemaObjectWrapper will try to use this in hashcode.
+        return null;
     }
 
 

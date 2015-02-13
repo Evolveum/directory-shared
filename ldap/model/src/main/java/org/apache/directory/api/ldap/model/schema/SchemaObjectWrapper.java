@@ -53,7 +53,10 @@ public class SchemaObjectWrapper
     {
         int h = 37;
         h += h * 17 + schemaObject.getObjectType().getValue();
-        h += h * 17 + schemaObject.getOid().hashCode();
+        if ( schemaObject.getOid() != null )
+        {
+            h += h * 17 + schemaObject.getOid().hashCode();
+        }
 
         return h;
     }
@@ -77,7 +80,18 @@ public class SchemaObjectWrapper
         SchemaObject that = ( ( SchemaObjectWrapper ) o ).get();
         SchemaObject current = get();
 
-        return ( that.getOid().equals( current.getOid() ) && ( that.getObjectType() == current.getObjectType() ) );
+        if ( that.getOid() == null && current.getOid() != null )
+        {
+            return false;
+        }
+
+        if ( current.getOid() == null && that.getOid() != null )
+        {
+            return false;
+        }
+
+        return ( ( ( that.getOid() == null && current.getOid() == null )
+                    || that.getOid().equals( current.getOid() ) ) && ( that.getObjectType() == current.getObjectType() ) );
     }
 
 
