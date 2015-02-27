@@ -142,7 +142,7 @@ public class LdapSyntax extends AbstractSchemaObject
             if ( ( values == null ) || ( values.size() == 0 ) )
             {
                 // Default to String if the flag is not set
-                return false;
+                return true;
             }
             else
             {
