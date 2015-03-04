@@ -48,6 +48,7 @@ import org.apache.directory.api.ldap.codec.controls.search.entryChange.EntryChan
 import org.apache.directory.api.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
 import org.apache.directory.api.ldap.codec.controls.search.persistentSearch.PersistentSearchFactory;
 import org.apache.directory.api.ldap.codec.controls.search.subentries.SubentriesFactory;
+import org.apache.directory.api.ldap.codec.controls.search.vlv.VirtualListViewRequestFactory;
 import org.apache.directory.api.ldap.model.message.Control;
 import org.apache.directory.api.ldap.model.message.ExtendedRequest;
 import org.apache.directory.api.ldap.model.message.ExtendedRequestImpl;
@@ -62,6 +63,7 @@ import org.apache.directory.api.ldap.model.message.controls.PagedResults;
 import org.apache.directory.api.ldap.model.message.controls.PersistentSearch;
 import org.apache.directory.api.ldap.model.message.controls.ProxiedAuthz;
 import org.apache.directory.api.ldap.model.message.controls.Subentries;
+import org.apache.directory.api.ldap.model.message.controls.VirtualListViewRequest;
 import org.apache.directory.api.util.Strings;
 import org.apache.directory.api.util.exception.NotImplementedException;
 import org.apache.mina.filter.codec.ProtocolCodecFactory;
@@ -123,6 +125,10 @@ public class DefaultLdapCodecService implements LdapApiService
         ControlFactory<PagedResults> pageResultsFactory = new PagedResultsFactory( this );
         controlFactories.put( pageResultsFactory.getOid(), pageResultsFactory );
         LOG.info( "Registered pre-bundled control factory: {}", pageResultsFactory.getOid() );
+        
+        ControlFactory<VirtualListViewRequest> vlvRequestFactory = new VirtualListViewRequestFactory( this );
+        controlFactories.put( vlvRequestFactory.getOid(), vlvRequestFactory );
+        LOG.info( "Registered pre-bundled control factory: {}", vlvRequestFactory.getOid() );
 
         ControlFactory<PersistentSearch> persistentSearchFactory = new PersistentSearchFactory( this );
         controlFactories.put( persistentSearchFactory.getOid(), persistentSearchFactory );
