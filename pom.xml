@@ -64,10 +64,16 @@
   </properties>
   
   <distributionManagement>
-    <site>
-      <id>apache.directory.shared</id>
-      <url>${distMgmtSiteUrl}</url>
-    </site>
+	<repository>
+		<id>evolveum-nexus</id>
+		<name>Internal Releases</name>
+		<url>http://nexus.evolveum.com/nexus/content/repositories/releases/</url>
+	</repository>
+	<snapshotRepository>
+		<id>evolveum-nexus</id>
+		<name>Internal Releases</name>
+		<url>http://nexus.evolveum.com/nexus/content/repositories/snapshots/</url>
+	</snapshotRepository>
   </distributionManagement>
 
   <issueManagement>
