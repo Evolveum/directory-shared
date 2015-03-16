@@ -103,6 +103,7 @@ public class DefaultSchemaLoader extends AbstractSchemaLoader
     private static NormalizerDescriptionSchemaParser N_DESCR_SCHEMA_PARSER = new NormalizerDescriptionSchemaParser();
     private static SyntaxCheckerDescriptionSchemaParser SC_DESCR_SCHEMA_PARSER = new SyntaxCheckerDescriptionSchemaParser();
 
+
     /**
      * Creates a new instance of DefaultSchemaLoader.
      *
@@ -114,6 +115,7 @@ public class DefaultSchemaLoader extends AbstractSchemaLoader
     {
         this( connection, false );
     }
+
 
     /**
      * Creates a new instance of DefaultSchemaLoader.
@@ -131,8 +133,7 @@ public class DefaultSchemaLoader extends AbstractSchemaLoader
         }
 
         this.connection = connection;
-
-        setQuirksMode(quirksMode);
+        setQuirksMode( quirksMode );
 
         // Flagging if the connection was already connected
         boolean wasConnected = connection.isConnected();
@@ -1137,12 +1138,13 @@ public class DefaultSchemaLoader extends AbstractSchemaLoader
         return entry;
     }
 
+
     /**
      * Sets the quirks mode for all the internal parsers.
-     * 
+     *
      * If enabled the parser accepts non-numeric OIDs and some
      * special characters in descriptions.
-     * 
+     *
      * @param enabled the new quirks mode
      */
     public void setQuirksMode( boolean enabled )

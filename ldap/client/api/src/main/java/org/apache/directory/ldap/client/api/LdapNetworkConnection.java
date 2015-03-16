@@ -582,14 +582,16 @@ public class LdapNetworkConnection extends AbstractLdapConnection implements Lda
 
                     if ( !isConnected )
                     {
-                        if (connectionFuture.getException() instanceof ConnectException) {
-                            // No need to wait. 
+                        if ( connectionFuture.getException() instanceof ConnectException )
+                        {
+                            // No need to wait
                             // We know that there was a permanent error such as "connection refused".
-                            LOG.debug( "------>>   Connection error: {}", connectionFuture.getException().getMessage());
+                            LOG.debug( "------>> Connection error: {}", connectionFuture.getException().getMessage() );
                             break;
                         }
-                        LOG.debug( "------>>   Cannot get the connection ... Retrying");
-                        
+
+                        LOG.debug( "------>>   Cannot get the connection... Retrying" );
+
                         // Wait 500 ms and retry
                         try
                         {
