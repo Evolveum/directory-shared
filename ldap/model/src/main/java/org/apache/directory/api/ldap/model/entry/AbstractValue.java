@@ -147,7 +147,11 @@ public abstract class AbstractValue<T> implements Value<T>
             {
                 if ( wrappedValue != null )
                 {
-                    boolean isHR = attributeType.getSyntax().isHumanReadable();
+                    boolean isHR = true;
+                    if ( attributeType.getSyntax() != null )
+                    {
+                        isHR = attributeType.getSyntax().isHumanReadable();
+                    }
 
                     if ( isHR != isHumanReadable() )
                     {

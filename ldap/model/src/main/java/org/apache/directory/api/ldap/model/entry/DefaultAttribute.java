@@ -462,8 +462,14 @@ public class DefaultAttribute implements Attribute, Cloneable
         }
         else
         {
-
-            isHR = attributeType.getSyntax().isHumanReadable();
+            if (attributeType.getSyntax() == null ) 
+            {
+                isHR = true;
+            }
+            else
+            {
+                isHR = attributeType.getSyntax().isHumanReadable();
+            }
 
             // Copy all the values
             for ( Value<?> clientValue : attribute )
@@ -787,7 +793,7 @@ public class DefaultAttribute implements Attribute, Cloneable
         {
             for ( Value<?> val : valArray )
             {
-                if ( attributeType.getSyntax().isHumanReadable() )
+                if ( attributeType.getSyntax() == null || attributeType.getSyntax().isHumanReadable() )
                 {
                     if ( ( val == null ) || val.isNull() )
                     {
@@ -842,7 +848,7 @@ public class DefaultAttribute implements Attribute, Cloneable
                 {
                     if ( val == null )
                     {
-                        if ( attributeType.getSyntax().getSyntaxChecker().isValidSyntax( val ) )
+                        if ( attributeType.getSyntax() == null || attributeType.getSyntax().getSyntaxChecker().isValidSyntax( val ) )
                         {
                             try
                             {

@@ -109,7 +109,7 @@ public class DefaultSchemaManager implements SchemaManager
     private SchemaLoader schemaLoader;
 
     /** the factory that generates respective SchemaObjects from LDIF entries */
-    private final EntityFactory factory;
+    private final SchemaEntityFactory factory;
 
     /** A Map containing all the schema being dependent from a schema */
     private Map<String, Set<String>> schemaDependences = new HashMap<String, Set<String>>();
@@ -1601,7 +1601,19 @@ public class DefaultSchemaManager implements SchemaManager
     {
         String oidTrimmed = Strings.toLowerCase( oid ).trim();
         String oidNoOption = stripOptions( oidTrimmed );
-        return registries.getAttributeTypeRegistry().lookup( oidNoOption );
+        try
+        {
+            return registries.getAttributeTypeRegistry().lookup( oidNoOption );
+        } 
+        catch ( LdapException e )
+        {
+        	if (isStrict()) 
+        	{
+        		throw e;
+        	} else {
+        	    return null;
+        	}
+        }
     }
 
 
@@ -2192,6 +2204,7 @@ public class DefaultSchemaManager implements SchemaManager
     public void setRelaxed()
     {
         isRelaxed = RELAXED;
+        factory.setRelaxed();
     }
 
 
@@ -2202,6 +2215,7 @@ public class DefaultSchemaManager implements SchemaManager
     public void setStrict()
     {
         isRelaxed = STRICT;
+        factory.setStrict();
     }
 
 

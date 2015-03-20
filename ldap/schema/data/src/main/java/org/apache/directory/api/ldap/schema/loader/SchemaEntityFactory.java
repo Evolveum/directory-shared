@@ -86,6 +86,15 @@ public class SchemaEntityFactory implements EntityFactory
 
     /** A special ClassLoader that loads a class from the bytecode attribute */
     private final AttributeClassLoader classLoader;
+    
+    /** A flag indicating that the SchemaEntityFactory is relaxed or not */
+    private boolean isRelaxed = STRICT;
+
+    /** Two flags for RELAXED and STRICT, this is STRICT */
+    public static final boolean STRICT = false;
+
+    /** Two flags for RELAXED and STRICT, this is RELAXED */
+    public static final boolean RELAXED = true;
 
 
     /**
@@ -115,7 +124,7 @@ public class SchemaEntityFactory implements EntityFactory
 
         String oid = mOid.getString();
 
-        if ( !Oid.isOid( oid ) )
+        if ( !isRelaxed && !Oid.isOid( oid ) )
         {
             String msg = I18n.err( I18n.ERR_10006, oid );
             LOG.warn( msg );
@@ -1217,5 +1226,45 @@ public class SchemaEntityFactory implements EntityFactory
 
         // The extensions field
         schemaObject.setExtensions( description.getExtensions() );
+    }
+    
+    /**
+     * Tells if the SchemaEntityFactory is permissive or if it must be checked
+     * against inconsistencies.
+     *
+     * @return True if SchemaObjects can be added even if they break the consistency
+     */
+    public boolean isRelaxed()
+    {
+        return isRelaxed;
+    }
+    
+    /**
+     * Tells if the SchemaEntityFactory is strict.
+     *
+     * @return True if SchemaObjects cannot be added if they break the consistency
+     */
+    public boolean isStrict()
+    {
+        return !isRelaxed;
+    }
+    
+    /**
+     * Change the SchemaEntityFactory to a relaxed mode, where invalid SchemaObjects
+     * can be registered.
+     */
+    public void setRelaxed()
+    {
+        isRelaxed = RELAXED;
+    }
+
+
+    /**
+     * Change the SchemaEntityFactory to a strict mode, where invalid SchemaObjects
+     * cannot be registered.
+     */
+    public void setStrict()
+    {
+        isRelaxed = STRICT;
     }
 }

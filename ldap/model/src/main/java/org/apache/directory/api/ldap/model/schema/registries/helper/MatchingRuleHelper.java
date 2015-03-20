@@ -102,15 +102,18 @@ public class MatchingRuleHelper
                 }
                 catch ( LdapException ne )
                 {
-                    // The Syntax is a mandatory element, it must exist.
-                    String msg = I18n.err( I18n.ERR_04317 );
-
-                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                        LdapSchemaExceptionCodes.MR_NONEXISTENT_SYNTAX, msg, ne );
-                    ldapSchemaException.setSourceObject( matchingRule );
-                    ldapSchemaException.setRelatedId( matchingRule.getSyntaxOid() );
-                    errors.add( ldapSchemaException );
-                    LOG.info( msg );
+                    if ( registries.isStrict() ) 
+                    {
+                        // The Syntax is a mandatory element, it must exist.
+                        String msg = I18n.err( I18n.ERR_04317, matchingRule.getOid(), matchingRule.getSyntaxOid() );
+    
+                        LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                            LdapSchemaExceptionCodes.MR_NONEXISTENT_SYNTAX, msg, ne );
+                        ldapSchemaException.setSourceObject( matchingRule );
+                        ldapSchemaException.setRelatedId( matchingRule.getSyntaxOid() );
+                        errors.add( ldapSchemaException );
+                        LOG.info( msg );
+                    }
                 }
 
                 /**

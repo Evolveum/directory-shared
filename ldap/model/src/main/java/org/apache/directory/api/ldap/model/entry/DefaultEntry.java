@@ -1356,6 +1356,10 @@ public final class DefaultEntry implements Entry
                 try
                 {
                     AttributeType attributeType = schemaManager.lookupAttributeTypeRegistry( id );
+                    
+                    if ( attributeType == null ) {
+                        return attributes.get( id );
+                    }
 
                     return attributes.get( attributeType.getOid() );
                 }

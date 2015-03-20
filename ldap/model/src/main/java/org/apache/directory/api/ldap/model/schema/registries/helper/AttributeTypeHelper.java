@@ -89,7 +89,7 @@ public class AttributeTypeHelper
                 buildSubstring( attributeType, errors, registries );
     
                 // Check the USAGE
-                checkUsage( attributeType, errors );
+                checkUsage( attributeType, errors, registries );
     
                 // Check the COLLECTIVE element
                 checkCollective( attributeType, errors );
@@ -287,17 +287,19 @@ public class AttributeTypeHelper
             }
             catch ( LdapException ne )
             {
-                // Not allowed.
-                String msg = I18n.err( I18n.ERR_04306, syntaxOid, attributeType.getName() );
-
-                LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                    LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX, msg, ne );
-                ldapSchemaException.setSourceObject( attributeType );
-                ldapSchemaException.setRelatedId( syntaxOid );
-                errors.add( ldapSchemaException );
-                LOG.info( msg );
-                
-                return;
+                if ( registries.isStrict() ) {
+                    // Not allowed.
+                    String msg = I18n.err( I18n.ERR_04306, syntaxOid, attributeType.getName() );
+    
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX, msg, ne );
+                    ldapSchemaException.setSourceObject( attributeType );
+                    ldapSchemaException.setRelatedId( syntaxOid );
+                    errors.add( ldapSchemaException );
+                    LOG.info( msg );
+                    
+                    return;
+                }
             }
 
             if ( currentSyntax != null )
@@ -307,17 +309,19 @@ public class AttributeTypeHelper
             }
             else
             {
-                // Not allowed.
-                String msg = I18n.err( I18n.ERR_04306, syntaxOid, attributeType.getName() );
-
-                LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                    LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX, msg );
-                ldapSchemaException.setSourceObject( attributeType );
-                ldapSchemaException.setRelatedId( syntaxOid );
-                errors.add( ldapSchemaException );
-                LOG.info( msg );
-                
-                return;
+                if ( registries.isStrict() ) {
+                    // Not allowed.
+                    String msg = I18n.err( I18n.ERR_04306, syntaxOid, attributeType.getName() );
+    
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.AT_NONEXISTENT_SYNTAX, msg );
+                    ldapSchemaException.setSourceObject( attributeType );
+                    ldapSchemaException.setRelatedId( syntaxOid );
+                    errors.add( ldapSchemaException );
+                    LOG.info( msg );
+                    
+                    return;
+                }
             }
         }
         else
@@ -362,17 +366,20 @@ public class AttributeTypeHelper
             }
             catch ( LdapException ne )
             {
-                // Not allowed.
-                String msg = I18n.err( I18n.ERR_04308, equalityOid, attributeType.getName() );
-
-                LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                    LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE, msg, ne );
-                ldapSchemaException.setSourceObject( attributeType );
-                ldapSchemaException.setRelatedId( equalityOid );
-                errors.add( ldapSchemaException );
-                LOG.info( msg );
-                
-                return;
+                if ( registries.isStrict() )
+                {
+                    // Not allowed.
+                    String msg = I18n.err( I18n.ERR_04308, equalityOid, attributeType.getName() );
+    
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE, msg, ne );
+                    ldapSchemaException.setSourceObject( attributeType );
+                    ldapSchemaException.setRelatedId( equalityOid );
+                    errors.add( ldapSchemaException );
+                    LOG.info( msg );
+                    
+                    return;
+                }
             }
 
             if ( currentEquality != null )
@@ -384,15 +391,18 @@ public class AttributeTypeHelper
             }
             else
             {
-                // Not allowed.
-                String msg = I18n.err( I18n.ERR_04309, equalityOid, attributeType.getName() );
-
-                LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                    LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE, msg );
-                ldapSchemaException.setSourceObject( attributeType );
-                ldapSchemaException.setRelatedId( equalityOid );
-                errors.add( ldapSchemaException );
-                LOG.info( msg );
+                if ( registries.isStrict() )
+                {
+                    // Not allowed.
+                    String msg = I18n.err( I18n.ERR_04309, equalityOid, attributeType.getName() );
+    
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.AT_NONEXISTENT_EQUALITY_MATCHING_RULE, msg );
+                    ldapSchemaException.setSourceObject( attributeType );
+                    ldapSchemaException.setRelatedId( equalityOid );
+                    errors.add( ldapSchemaException );
+                    LOG.info( msg );
+                }
             }
         }
         else
@@ -426,17 +436,20 @@ public class AttributeTypeHelper
             }
             catch ( LdapException ne )
             {
-                // Not allowed.
-                String msg = I18n.err( I18n.ERR_04312, substringOid, attributeType.getName() );
-
-                LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                    LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE, msg, ne );
-                ldapSchemaException.setSourceObject( attributeType );
-                ldapSchemaException.setRelatedId( substringOid );
-                errors.add( ldapSchemaException );
-                LOG.info( msg );
-                
-                return;
+                if ( registries.isStrict() )
+                {
+                    // Not allowed.
+                    String msg = I18n.err( I18n.ERR_04312, substringOid, attributeType.getName() );
+    
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE, msg, ne );
+                    ldapSchemaException.setSourceObject( attributeType );
+                    ldapSchemaException.setRelatedId( substringOid );
+                    errors.add( ldapSchemaException );
+                    LOG.info( msg );
+                    
+                    return;
+                }
             }
 
             if ( currentSubstring != null )
@@ -445,17 +458,20 @@ public class AttributeTypeHelper
             }
             else
             {
-                // Not allowed.
-                String msg = I18n.err( I18n.ERR_04313, substringOid, attributeType.getName() );
-
-                LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                    LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE, msg );
-                ldapSchemaException.setSourceObject( attributeType );
-                ldapSchemaException.setRelatedId( substringOid );
-                errors.add( ldapSchemaException );
-                LOG.info( msg );
-                
-                return;
+                if ( registries.isStrict() )
+                {
+                    // Not allowed.
+                    String msg = I18n.err( I18n.ERR_04313, substringOid, attributeType.getName() );
+    
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.AT_NONEXISTENT_SUBSTRING_MATCHING_RULE, msg );
+                    ldapSchemaException.setSourceObject( attributeType );
+                    ldapSchemaException.setRelatedId( substringOid );
+                    errors.add( ldapSchemaException );
+                    LOG.info( msg );
+                    
+                    return;
+                }
             }
         }
         else
@@ -538,12 +554,12 @@ public class AttributeTypeHelper
     /**
      * Check the constraints for the Usage field.
      */
-    private static void checkUsage( AttributeType attributeType, List<Throwable> errors )
+    private static void checkUsage( AttributeType attributeType, List<Throwable> errors, Registries registries )
     {
         AttributeType superior = attributeType.getSuperior();
         
         // Check that the AT usage is the same that its superior
-        if ( ( superior != null ) && ( attributeType.getUsage() != superior.getUsage() ) )
+        if ( registries.isStrict() && ( superior != null ) && ( attributeType.getUsage() != superior.getUsage() ) )
         {
             // This is an error
             String msg = I18n.err( I18n.ERR_04314, attributeType.getName() );
@@ -558,7 +574,7 @@ public class AttributeTypeHelper
         }
 
         // Now, check that the AttributeType's USAGE does not conflict
-        if ( !attributeType.isUserModifiable() && ( attributeType.getUsage() == UsageEnum.USER_APPLICATIONS ) )
+        if ( registries.isStrict() && !attributeType.isUserModifiable() && ( attributeType.getUsage() == UsageEnum.USER_APPLICATIONS ) )
         {
             // Cannot have a not user modifiable AT which is not an operational AT
             String msg = I18n.err( I18n.ERR_04315, attributeType.getName() );

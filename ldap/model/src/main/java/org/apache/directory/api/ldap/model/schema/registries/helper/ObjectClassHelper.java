@@ -139,7 +139,7 @@ public class ObjectClassHelper
                             break;
 
                         case AUXILIARY:
-                            if ( superior.getType() == ObjectClassTypeEnum.STRUCTURAL )
+                            if ( superior.getType() == ObjectClassTypeEnum.STRUCTURAL && registries.isStrict() )
                             {
                                 // An AUXILIARY OC cannot inherit from STRUCTURAL OCs
                                 String msg = I18n.err( I18n.ERR_04319, objectClass.getOid(), superior );
@@ -246,35 +246,41 @@ public class ObjectClassHelper
                     // Check that the MUST AT is not also present in the MAY AT
                     if ( objectClass.getMayAttributeTypes().contains( attributeType ) )
                     {
-                        // Already registered : this is an error
-                        String msg = I18n.err( I18n.ERR_04325, objectClass.getOid(), mustAttributeTypeName );
-
-                        LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                            LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY_AND_MUST,
-                            msg );
-                        ldapSchemaException.setSourceObject( objectClass );
-                        ldapSchemaException.setRelatedId( mustAttributeTypeName );
-                        errors.add( ldapSchemaException );
-                        LOG.info( msg );
-
-                        break;
+                        if (registries.isStrict())
+                        {
+                            // Already registered : this is an error
+                            String msg = I18n.err( I18n.ERR_04325, objectClass.getOid(), mustAttributeTypeName );
+    
+                            LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                                LdapSchemaExceptionCodes.OC_DUPLICATE_AT_IN_MAY_AND_MUST,
+                                msg );
+                            ldapSchemaException.setSourceObject( objectClass );
+                            ldapSchemaException.setRelatedId( mustAttributeTypeName );
+                            errors.add( ldapSchemaException );
+                            LOG.info( msg );
+    
+                            break;
+                        }
                     }
 
                     objectClass.getMustAttributeTypes().add( attributeType );
                 }
                 catch ( LdapException ne )
                 {
-                    // Cannot find the AT
-                    String msg = I18n.err( I18n.ERR_04326, objectClass.getOid(), mustAttributeTypeName );
-
-                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                        LdapSchemaExceptionCodes.OC_NONEXISTENT_MUST_AT, msg, ne );
-                    ldapSchemaException.setSourceObject( objectClass );
-                    ldapSchemaException.setRelatedId( mustAttributeTypeName );
-                    errors.add( ldapSchemaException );
-                    LOG.info( msg );
-
-                    break;
+                    if ( registries.isStrict() )
+                    {
+                        // Cannot find the AT
+                        String msg = I18n.err( I18n.ERR_04326, objectClass.getOid(), mustAttributeTypeName );
+    
+                        LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                            LdapSchemaExceptionCodes.OC_NONEXISTENT_MUST_AT, msg, ne );
+                        ldapSchemaException.setSourceObject( objectClass );
+                        ldapSchemaException.setRelatedId( mustAttributeTypeName );
+                        errors.add( ldapSchemaException );
+                        LOG.info( msg );
+    
+                        break;
+                    }
                 }
             }
         }
@@ -333,17 +339,20 @@ public class ObjectClassHelper
                 }
                 catch ( LdapException ne )
                 {
-                    // Cannot find the AT
-                    String msg = I18n.err( I18n.ERR_04323, objectClass.getOid(), mayAttributeTypeName );
-
-                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                        LdapSchemaExceptionCodes.OC_NONEXISTENT_MAY_AT, msg, ne );
-                    ldapSchemaException.setSourceObject( objectClass );
-                    ldapSchemaException.setRelatedId( mayAttributeTypeName );
-                    errors.add( ldapSchemaException );
-                    LOG.info( msg );
-
-                    break;
+                    if (registries.isStrict())
+                    {
+                        // Cannot find the AT
+                        String msg = I18n.err( I18n.ERR_04323, objectClass.getOid(), mayAttributeTypeName );
+    
+                        LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                            LdapSchemaExceptionCodes.OC_NONEXISTENT_MAY_AT, msg, ne );
+                        ldapSchemaException.setSourceObject( objectClass );
+                        ldapSchemaException.setRelatedId( mayAttributeTypeName );
+                        errors.add( ldapSchemaException );
+                        LOG.info( msg );
+    
+                        break;
+                    }
                 }
             }
         }

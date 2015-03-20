@@ -279,6 +279,11 @@ public class DefaultSchemaLoader extends AbstractSchemaLoader
             SchemaConstants.SYNTAX_CHECKERS_AT
             );
 
+        if (subschemaSubentry == null)
+        {
+            throw new LdapException("Subschema entry '"+subschemaSubentryDn+"' cannot be retrieved");
+        }
+        
         // Load all the AT
         Attribute attributeTypes = subschemaSubentry.get( SchemaConstants.ATTRIBUTE_TYPES_AT );
         loadAttributeTypes( attributeTypes );

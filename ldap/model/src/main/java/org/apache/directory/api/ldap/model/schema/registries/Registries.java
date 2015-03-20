@@ -965,30 +965,36 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // Process the Syntax. It can't be null
         String syntaxOid = matchingRule.getSyntaxOid();
 
-        if ( syntaxOid != null )
+        if ( isStrict() ) 
         {
-            // Check if the Syntax is present in the registries
-            try
+            if ( syntaxOid != null)
             {
-                ldapSyntaxRegistry.lookup( syntaxOid );
+                // Check if the Syntax is present in the registries
+                try
+                {
+                    ldapSyntaxRegistry.lookup( syntaxOid );
+                }
+                catch ( LdapException ne )
+                {
+                    // This MR's syntax has not been loaded into the Registries.
+                    String msg = I18n.err( I18n.ERR_04294, matchingRule.getOid() );
+                    LdapSchemaException ldapSchemaException = new LdapSchemaException(
+                        LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, msg , ne );
+                    ldapSchemaException.setSourceObject( matchingRule );
+                    errors.add( ldapSchemaException );
+                    LOG.error( msg );
+                }
             }
-            catch ( LdapException ne )
+            else
             {
-                // This MR's syntax has not been loaded into the Registries.
+                // This is an error.
+                String msg = I18n.err( I18n.ERR_04294, matchingRule.getOid() );
                 LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                    LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, I18n.err( I18n.ERR_04294, matchingRule.getOid() ),
-                    ne );
+                    LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, msg );
                 ldapSchemaException.setSourceObject( matchingRule );
                 errors.add( ldapSchemaException );
+                LOG.error( msg );
             }
-        }
-        else
-        {
-            // This is an error.
-            LdapSchemaException ldapSchemaException = new LdapSchemaException(
-                LdapSchemaExceptionCodes.OID_ALREADY_REGISTERED, I18n.err( I18n.ERR_04294, matchingRule.getOid() ) );
-            ldapSchemaException.setSourceObject( matchingRule );
-            errors.add( ldapSchemaException );
         }
 
         // Process the Normalizer
@@ -1074,8 +1080,11 @@ public class Registries implements SchemaLoaderListener, Cloneable
             }
             catch ( LdapException ne )
             {
-                // This AT's syntax has not been loaded into the Registries.
-                errors.add( ne );
+                if (isStrict())
+                {
+                    // This AT's syntax has not been loaded into the Registries.
+                    errors.add( ne );
+                }
             }
         }
         else
@@ -1095,7 +1104,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // it must have been processed before
         String equalityOid = attributeType.getEqualityOid();
 
-        if ( equalityOid != null )
+        if ( equalityOid != null && isStrict() )
         {
             // Check if the MatchingRule is present in the registries
             try
@@ -1131,7 +1140,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         // it must have been processed before
         String substringOid = attributeType.getSubstringOid();
 
-        if ( substringOid != null )
+        if ( substringOid != null && isStrict() )
         {
             // Check if the MatchingRule is present in the registries
             try
@@ -1213,7 +1222,7 @@ public class Registries implements SchemaLoaderListener, Cloneable
         List<AttributeType> musts = getMustRecursive( new ArrayList<AttributeType>(), new HashSet<ObjectClass>(),
             objectClass );
 
-        if ( musts != null )
+        if ( musts != null && isStrict() )
         {
             for ( AttributeType may : objectClass.getMayAttributeTypes() )
             {
@@ -1279,33 +1288,36 @@ public class Registries implements SchemaLoaderListener, Cloneable
             }
         }
 
-        // Process the MAY attributeTypes.
-        for ( String mayOid : objectClass.getMayAttributeTypeOids() )
+        if ( isStrict() )
         {
-            // Check if the MAY AttributeType is present in the registries
-            try
+            // Process the MAY attributeTypes.
+            for ( String mayOid : objectClass.getMayAttributeTypeOids() )
             {
-                attributeTypeRegistry.lookup( mayOid );
+                // Check if the MAY AttributeType is present in the registries
+                try
+                {
+                    attributeTypeRegistry.lookup( mayOid );
+                }
+                catch ( LdapException ne )
+                {
+                    // This AT has not been loaded into the Registries.
+                    errors.add( ne );
+                }
             }
-            catch ( LdapException ne )
+    
+            // Process the MUST attributeTypes.
+            for ( String mustOid : objectClass.getMustAttributeTypeOids() )
             {
-                // This AT has not been loaded into the Registries.
-                errors.add( ne );
-            }
-        }
-
-        // Process the MUST attributeTypes.
-        for ( String mustOid : objectClass.getMustAttributeTypeOids() )
-        {
-            // Check if the MUST AttributeType is present in the registries
-            try
-            {
-                attributeTypeRegistry.lookup( mustOid );
-            }
-            catch ( LdapException ne )
-            {
-                // This AT has not been loaded into the Registries.
-                errors.add( ne );
+                // Check if the MUST AttributeType is present in the registries
+                try
+                {
+                    attributeTypeRegistry.lookup( mustOid );
+                }
+                catch ( LdapException ne )
+                {
+                    // This AT has not been loaded into the Registries.
+                    errors.add( ne );
+                }
             }
         }
 
